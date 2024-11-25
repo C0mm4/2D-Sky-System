@@ -53,8 +53,10 @@ Shader "Custom/TimeBasedCloue"
             float4 frag(v2f i) : SV_Target{
 
                 float timeOfDay = _CustomTime;
+                // Set Cloud Texture
                 float4 texColor = tex2D(_MainTex, i.uv);
 
+                // Set Suntimes
                 float Sunrise = 0.23;
                 float SunMid = 0.25;
                 float SunSet = 0.77;
@@ -62,39 +64,33 @@ Shader "Custom/TimeBasedCloue"
                 float FallDown = 0.81;
 
                 float4 skyColor = texColor;
-
+                // if before sunrise or after sunset
                 if(timeOfDay <= Sunrise || timeOfDay >= FallDown){
                     texColor.rgb = lerp(texColor, _SkyColorNight * texColor, 1);
                 }
-
+                // if sunrise time
                 else if(timeOfDay >= Sunrise && timeOfDay <= SunMid){
-                    
                     texColor.rgb = lerp(_SkyColorMorning * texColor, _SkyColorNoon * texColor, saturate((timeOfDay - Sunrise) / (SunMid - Sunrise)));
-                    }
-
+                }
+                // if morning to evening
                 else if(timeOfDay >= SunMid && timeOfDay <= SunSet){
-                    
                     texColor.rgb = lerp(texColor, _SkyColorNoon * texColor, 1);
-                    }
-
+                }
+                // if sunset during sun over horizon
                 else if(timeOfDay >= SunSet && timeOfDay <= SunFall){
                     texColor.rgb = lerp(_SkyColorNoon * texColor, _SkyColorEvening * texColor, saturate((timeOfDay - SunSet) / (SunFall - SunSet)));
-                    
-                    }
-
+                }
+                // if sunset during sun down horizon
                 else {
                     texColor.rgb = lerp(_SkyColorEvening * texColor, _SkyColorNight * texColor, saturate((timeOfDay - SunFall) / (FallDown - SunFall)));
-                    
-                    }
-
-
-
+                }
+                // disgard low alpha pixels
                 if(skyColor.a > 0.1){
                     texColor.a = texColor.a * skyColor.a;
-                    }
+                }
                 else{
                     discard;
-                    }
+                }
 
 
                 return float4(texColor.rgb, texColor.a);

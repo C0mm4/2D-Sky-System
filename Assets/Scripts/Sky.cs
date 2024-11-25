@@ -13,9 +13,10 @@ public class Sky : TilemapParallax
     public override void Awake()
     {
         base.Awake();
+
+        // Sky Sprite Base Position
         baseX = 3.04f;
         baseY = 1.7f;
-
 
     }
 
@@ -23,7 +24,6 @@ public class Sky : TilemapParallax
     {
         base.Update();
 
-        
         // Set SkySprite Position, Scale
         skySprite.transform.localScale = new Vector3(
             20 * 0.32f + Mathf.Max(GetComponent<Tilemap>().cellBounds.size.x - 20, 0) * (1 - parallaxEffectX) * 0.32f,
@@ -36,7 +36,7 @@ public class Sky : TilemapParallax
             0
             );
 
-
+        // Set Material time
         skyMaterial.SetFloat("_CustomTime", gameTime.time / 1440f);
     }
 }

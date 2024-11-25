@@ -13,20 +13,22 @@ public class TilemapParallax : MonoBehaviour
     public float smoothSpeed = 0.1f;
     public virtual void Awake()
     {
-
-        // 타일맵의 폭과 높이 계산
+        // Initialize tilemap bound size
         var bounds = GetComponent<TilemapRenderer>().bounds;
-        // 메인 카메라 가져오기
+
+        // Initialize Main Camera
         cameraTransform = Camera.main?.transform;
         if (cameraTransform == null)
         {
             Debug.LogError("Main Camera not found!");
         }
 
-        // 시작 위치 저장
+        // Initialize Tilemap Position at start
         startPositionX = 0f;
         startPositionY = 0f;
 
+
+        // Initialize Camera Position at Start - Render Type : Orthographic, Size : 1.7
         cameraStartPosX = 3.04f;
         cameraStartPosY = 1.7f;
 
@@ -34,10 +36,10 @@ public class TilemapParallax : MonoBehaviour
     }
     public virtual void Update()
     {
-        // 타일맵 크기 갱신
+        // Reset Tilemap bound size - for reset tilemap bounds on map inspector
         var bounds = GetComponent<TilemapRenderer>().bounds;
 
-        // 카메라가 없으면 다시 시도
+        // if camera is not found, refind camera
         if (cameraTransform == null)
         {
             cameraTransform = Camera.main?.transform;
@@ -45,6 +47,7 @@ public class TilemapParallax : MonoBehaviour
         }
         else
         {
+            // tilemap position calculate
             float targetPositionX = startPositionX + (cameraTransform.position.x - cameraStartPosX) * parallaxEffectX;
             float targetPositionY = startPositionY + (cameraTransform.position.y - cameraStartPosY) * parallaxEffectY;
             Vector3 smoothPosition = Vector3.Lerp(transform.position, new Vector3(targetPositionX, targetPositionY, transform.position.z), 0.6f);

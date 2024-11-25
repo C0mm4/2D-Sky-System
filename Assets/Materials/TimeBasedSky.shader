@@ -46,6 +46,7 @@ Shader "Custom/TimeBasedSky"
             {
                 float timeOfDay = _CustomTime;
 
+                // Set Sun Times
                 float Sunrise = 0.23;
                 float SunMid = 0.25;
                 float SunSet = 0.77;
@@ -54,29 +55,27 @@ Shader "Custom/TimeBasedSky"
 
                 float4 skyColor;
 
+                // if before sunrise or after sunset
                 if(timeOfDay <= Sunrise || timeOfDay >= FallDown){
                     skyColor.rgb = _SkyColorNight;
                 }
-
+                // if sunrise time
                 else if(timeOfDay >= Sunrise && timeOfDay <= SunMid){
                     
                     skyColor.rgb = lerp(_SkyColorMorning, _SkyColorNoon, saturate((timeOfDay - Sunrise) / (SunMid - Sunrise)));
-                    }
-
+                }
+                // if morning to evening
                 else if(timeOfDay >= SunMid && timeOfDay <= SunSet){
-                    
                     skyColor.rgb = _SkyColorNoon;
-                    }
-
+                }
+                // if sunset during sun over horizon
                 else if(timeOfDay >= SunSet && timeOfDay <= SunFall){
                     skyColor.rgb = lerp(_SkyColorNoon, _SkyColorEvening, saturate((timeOfDay - SunSet) / (SunFall - SunSet)));
-                    
-                    }
-
+                }
+                // if sunset during sun down horizon
                 else {
                     skyColor.rgb = lerp(_SkyColorEvening, _SkyColorNight, saturate((timeOfDay - SunFall) / (FallDown - SunFall)));
-                    
-                    }
+                }
 
 
                 return skyColor;
